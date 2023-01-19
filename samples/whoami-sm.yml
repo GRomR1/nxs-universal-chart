@@ -2,6 +2,8 @@
 deploymentsGeneral:
   enableAffinity: false # default is true
 
+nameOverride: "whoami"
+
 deployments:
   whoami:
     securityContext:
@@ -29,6 +31,12 @@ deployments:
         allowPrivilegeEscalation: false
         readOnlyRootFilesystem: true
 
+secrets:
+  monitoring-user:
+    data:
+      user: admin
+      password: admin
+
 services:
   whoami-web:
     type: ClusterIP
@@ -44,3 +52,10 @@ serviceMonitors:
     - interval: 30s
       port: web
       path: /
+      basicAuth:
+        password:
+          name: '{{ $.Values.nameOverride }}-monitoring-user'
+          key: password
+        username:
+          name: '{{ $.Values.nameOverride }}-monitoring-user'
+          key: user

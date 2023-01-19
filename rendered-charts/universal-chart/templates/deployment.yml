@@ -1,0 +1,61 @@
+---
+# Source: universal-chart/templates/deployment.yml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: whoami-whoami
+  namespace: tox-o11y-app
+  labels:
+    app.kubernetes.io/name: whoami
+    app.kubernetes.io/instance: w
+    helm.sh/chart: universal-chart-2.1.10
+    app.kubernetes.io/managed-by: Helm
+  annotations:    
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: whoami
+      app.kubernetes.io/instance: w
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: whoami
+        app.kubernetes.io/instance: w
+      annotations:
+    spec:      
+      securityContext:
+        fsGroup: 2000
+        runAsGroup: 3000
+        runAsUser: 1000
+      
+      
+      
+      
+      
+      containers:
+      - name: "whoami"
+        image: containous/whoami:v1.5.0
+        imagePullPolicy: IfNotPresent
+        securityContext:
+          allowPrivilegeEscalation: false
+          readOnlyRootFilesystem: true
+        args:
+        - --port
+        - "8080"    
+        ports:
+        - containerPort: 8080
+          name: web
+        resources:
+          limits:
+            cpu: 10m
+            memory: 128Mi
+          requests:
+            cpu: 1m
+            memory: 64Mi
+        volumeMounts:
+        
+          []
+      
+      volumes:
+        []

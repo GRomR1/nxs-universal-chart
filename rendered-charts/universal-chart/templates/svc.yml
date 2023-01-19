@@ -1,0 +1,23 @@
+---
+# Source: universal-chart/templates/svc.yml
+kind: Service
+apiVersion: v1
+metadata:
+  name: whoami-whoami-web
+  namespace: tox-o11y-app
+  labels:
+    app.kubernetes.io/name: whoami
+    app.kubernetes.io/instance: w
+    helm.sh/chart: universal-chart-2.1.10
+    app.kubernetes.io/managed-by: Helm
+  annotations:
+spec:
+  type: ClusterIP
+  ports:
+  - name: web
+    protocol: TCP
+    port: 80
+    targetPort: 8080
+  selector:
+    app.kubernetes.io/name: whoami
+    app.kubernetes.io/instance: w

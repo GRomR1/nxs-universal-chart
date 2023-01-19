@@ -31,7 +31,48 @@ metadata:
     {{- with .labels }}{{- include "helpers.tplvalues.render" (dict "value" . "context" $) | nindent 4 }}{{- end }}
 spec:
   endpoints:
-    {{- include "helpers.tplvalues.render" (dict "value" .endpoints "context" $) | nindent 4 }}
+  {{- range .endpoints }}
+  - {{- with .path }}
+    host: {{ include "helpers.tplvalues.render" (dict "value" . "context" $) }}
+    {{- end }}
+    {{- with .port }}
+    port: {{ include "helpers.tplvalues.render" (dict "value" . "context" $) }}
+    {{- end }}
+    {{- with .interval }}
+    interval: {{ include "helpers.tplvalues.render" (dict "value" . "context" $) }}
+    {{- end }}
+    {{- with .scheme }}
+    interval: {{ include "helpers.tplvalues.render" (dict "value" . "context" $) }}
+    {{- end }}
+    {{- with .scrapeTimeout }}
+    interval: {{ include "helpers.tplvalues.render" (dict "value" . "context" $) }}
+    {{- end }}
+    {{- with .honorLabels }}
+    interval: {{ include "helpers.tplvalues.render" (dict "value" . "context" $) }}
+    {{- end }}
+    {{- with .honorTimestamps }}
+    interval: {{ include "helpers.tplvalues.render" (dict "value" . "context" $) }}
+    {{- end }}
+    {{- with .scrapeTimeout }}
+    scrapeTimeout: {{ include "helpers.tplvalues.render" (dict "value" . "context" $) }}
+    {{- end }}
+    {{ with .basicAuth }}
+    basicAuth:
+      password:
+        name: {{ include "helpers.tplvalues.render" (dict "value" .password.name "context" $) }}
+        key: {{ include "helpers.tplvalues.render" (dict "value" .password.key "context" $) }}
+      username:
+        name: {{ include "helpers.tplvalues.render" (dict "value" .username.name "context" $) }}
+        key: {{ include "helpers.tplvalues.render" (dict "value" .username.name "context" $) }}
+    {{- end }}
+    {{ if .relabelings }}
+    relabelings:
+    {{- range $n, $v := .relabelings }}
+      {{ include "helpers.tplvalues.render" (dict "value" $v "context" $) }}
+    {{- end }}
+    {{- end }}
+  {{- end }}
+
   selector:
     matchLabels:
       {{- include "helpers.app.selectorLabels" $ | nindent 6 }}
@@ -39,3 +80,7 @@ spec:
       {{- with .extraSelectorLabels }}{{- include "helpers.tplvalues.render" (dict "value" . "context" $) | nindent 6 }}{{- end -}}
 {{- end }}
 {{- end }}
+
+{{/*
+{{- include "helpers.tplvalues.render" (dict "value" .endpoints "context" $) | nindent 4 }}
+*/}}
