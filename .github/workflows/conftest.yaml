@@ -27,7 +27,7 @@ jobs:
         run: |
           helm template w --values ./samples/whoami-simple.yml ./charts/universal-chart/. --output-dir whoami-simple
           ls whoami-simple
-          cat whoami-simple/*
+          cat whoami-simple/universal-chart/templates/*
           kubectl version --short
 
       # https://github.com/marketplace/actions/conftest-action
