@@ -29,12 +29,22 @@ jobs:
           ls whoami-simple
           cat whoami-simple/universal-chart/templates/*
 
+      - name: Dry-run with kubectl
+        run: |
+          kubectl apply --dry-run=client -f whoami-simple/universal-chart/templates/*   || true
 
       - name: Testing with conftest
         run: |
           cat whoami-simple/universal-chart/templates/* || true
+          ls charts/universal-chart/tests/policy/lib || true
+          cat charts/universal-chart/tests/policy/lib/* || true
+          cat charts/universal-chart/tests/policy/*.rego || true
+
           conftest --version || true
-          ./conftest --version || true
+          conftest test --combine -p ./charts/universal-chart/tests/policy/whoami-simple.rego
+            -p ./charts/universal-chart/tests/policy/lib
+            --data samples/whoami-simple.yml
+            whoami-simple/universal-chart/templates/* || true
 
       # https://github.com/marketplace/actions/conftest-action
       # conftest test --combine -p ./charts/universal-chart/tests/policy/whoami-simple.rego \
@@ -44,6 +54,6 @@ jobs:
         with:
           files: whoami-simple/universal-chart/templates/
           data: samples/whoami-simple.yml
-          policy: ./charts/universal-chart/tests/policy/whoami-simple.rego ./charts/universal-chart/tests/policy/lib
+          policy: charts/universal-chart/tests/policy/whoami-simple.rego charts/universal-chart/tests/policy/lib
           gh-token: ${{ secrets.GITHUB_TOKEN }}
           gh-comment-url: ${{ github.event.pull_request.comments_url }}
