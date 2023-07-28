@@ -25,10 +25,10 @@ generic:
   #  checksum/secret-envs: '{{ include "helpers.workload.checksum" (printf "%s%s" $.Values.secretEnvs $.Values.secretEnvsString) }}'
   #  pod-annotation: true
   extraVolumes: []
-  #- name: cache
+  # - name: cache
   #  emptyDir: {}
   extraImagePullSecrets: []
-  #- name: regcred
+  # - name: regcred
 
 # Pod affinity preset
 # ref: https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#inter-pod-affinity-and-anti-affinity
@@ -67,7 +67,7 @@ envs: {}
 
 # --set "envsString=$ENVS_STRING"
 envsString: ""
-#envsString: |
+# envsString: |
 #  BAR2: foo2
 
 # --set "secretEnvs.FOO=bar"
@@ -76,7 +76,7 @@ secretEnvs: {}
 
 # --set "secretEnvsString=$SECRET_ENVS_STRING"
 secretEnvsString: ""
-#secretEnvsString: |
+# secretEnvsString: |
 #  FOO: BAR
 
 imagePullSecrets: {}
@@ -183,18 +183,18 @@ ingresses: {}
 
 secrets: {}
   # --set "secrets.secret-file.data.api\.key=$SOME_ENV"
-  #secret-file:
+  # secret-file:
   #  data:
   #    api.key: |-
   #      JFczZwReBkJFczZwReBkJFczZwReBkJFczZwReBk
-  ## --set "secrets.test1.labels.blah=blah,secrets.test1.data.BAR=foo"
-  #test1:
+  # # --set "secrets.test1.labels.blah=blah,secrets.test1.data.BAR=foo"
+  # test1:
   #  labels:
   #    blah: blah
   #  data:
   #    BAR: foo
-  ## --set-file "secrets.domain-tls.type=kubernetes.io\/tls,secrets.domain-tls.data.tls\.crt=path/to/tls.crt,secrets.domain-tls.data.tls\.key=path/to/tls.key"
-  #nixys-tls:
+  # # --set-file "secrets.domain-tls.type=kubernetes.io\/tls,secrets.domain-tls.data.tls\.crt=path/to/tls.crt,secrets.domain-tls.data.tls\.key=path/to/tls.key"
+  # nixys-tls:
   #  type: kubernetes.io/tls
   #  data:
   #    tls.crt: |-
@@ -205,25 +205,25 @@ secrets: {}
   #      -----BEGIN RSA PRIVATE KEY-----
   #      MIIEowIBAAKCAQEA1//LmU7tdWt/fgbqh1Feh+JFczZwReBkkyW
   #      -----END RSA PRIVATE KEY-----
-  ## --set "secrets.json-file.data.file\.json=$(printf %q $(cat file.json))"
-  ## --set-file "secrets.json-file.data.file\.json=path/to/file.json"
-  #json-file:
+  # # --set "secrets.json-file.data.file\.json=$(printf %q $(cat file.json))"
+  # # --set-file "secrets.json-file.data.file\.json=path/to/file.json"
+  # json-file:
   #  data:
   #    file.json: {
   #      "arg": "value"
   #    }
 
 configMaps: {}
-  #some-cm:
+  # some-cm:
   #  labels:
   #    kek: lol
   #  data:
   #    LOL: kek
-  #json-file:
+  # json-file:
   # data:
   #   file.json: {
   #     "arg": "value"
-#   }
+  # }
 
 # All PVSs will be added to `volumes` block in each workload excluding hooks
 pvcs: {}

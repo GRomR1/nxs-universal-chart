@@ -30,35 +30,30 @@ jobs:
 
       - name: Make k8s resources from charts
         run: |
-          helm template w --values ./samples/${{ matrix.sample }}.yml ./charts/universal-chart/. --output-dir ${{ matrix.sample }}
-          ls ${{ matrix.sample }}
-          cat ${{ matrix.sample }}/universal-chart/templates/*
+          helm template w --values ./charts/universal-chart/ci/${{ matrix.sample }}-values.yaml \
+            ./charts/universal-chart/. \
+            --output-dir ${{ matrix.sample }}
+          ls ${{ matrix.sample }} && cat ${{ matrix.sample }}/universal-chart/templates/*
 
-      - name: Dry-run with kubectl
-        run: |
-          kubectl apply --dry-run=client -f whoami-simple/universal-chart/templates/   || true
+      # - name: Dry-run with kubectl
+      #   run: |
+      #     kubectl apply --dry-run=client -f whoami-simple/universal-chart/templates/   || true
 
       - name: Testing with conftest
         run: |
-          cat whoami-simple/universal-chart/templates/* || true
-          ls charts/universal-chart/tests/policy/lib || true
-          cat charts/universal-chart/tests/policy/lib/* || true
-          cat charts/universal-chart/tests/policy/*.rego || true
-
-          conftest --version || true
-          conftest test --combine -p ./charts/universal-chart/tests/policy/whoami-simple.rego \
+          conftest test --combine -p ./charts/universal-chart/tests/policy/${{ matrix.sample }}.rego \
             -p ./charts/universal-chart/tests/policy/lib \
-            --data samples/whoami-simple.yml \
-            whoami-simple/universal-chart/templates/* || true
+            --data samples/${{ matrix.sample }}.yml \
+            ${{ matrix.sample }}/universal-chart/templates/* || true
 
-      # https://github.com/marketplace/actions/conftest-action
-      # conftest test --combine -p ./charts/universal-chart/tests/policy/whoami-simple.rego \
-      #   -p ./charts/universal-chart/tests/policy/lib --data samples/whoami-simple.yml  whoami-simple/
-      - name: Run conftest
-        uses: YubicoLabs/action-conftest@v3
-        with:
-          files: whoami-simple/universal-chart/templates/
-          data: samples/whoami-simple.yml
-          policy: charts/universal-chart/tests/policy/whoami-simple.rego charts/universal-chart/tests/policy/lib
-          gh-token: ${{ secrets.GITHUB_TOKEN }}
-          gh-comment-url: ${{ github.event.pull_request.comments_url }}
+      # # https://github.com/marketplace/actions/conftest-action
+      # # conftest test --combine -p ./charts/universal-chart/tests/policy/whoami-simple.rego \
+      # #   -p ./charts/universal-chart/tests/policy/lib --data samples/whoami-simple.yml  whoami-simple/
+      # - name: Run conftest
+      #   uses: YubicoLabs/action-conftest@v3
+      #   with:
+      #     files: whoami-simple/universal-chart/templates/
+      #     data: samples/whoami-simple.yml
+      #     policy: charts/universal-chart/tests/policy/whoami-simple.rego charts/universal-chart/tests/policy/lib
+      #     gh-token: ${{ secrets.GITHUB_TOKEN }}
+      #     gh-comment-url: ${{ github.event.pull_request.comments_url }}
