@@ -1,4 +1,3 @@
-
 # deploymentsGeneral:
 #   enableAffinity: false # default is true
 

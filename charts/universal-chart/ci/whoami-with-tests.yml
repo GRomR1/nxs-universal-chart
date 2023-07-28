@@ -39,7 +39,6 @@ services:
       port: 80
       targetPort: 8080
 
-
 hooks:
   test-job:
     kind: test-success
