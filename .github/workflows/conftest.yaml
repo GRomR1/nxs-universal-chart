@@ -41,9 +41,9 @@ jobs:
           cat charts/universal-chart/tests/policy/*.rego || true
 
           conftest --version || true
-          conftest test --combine -p ./charts/universal-chart/tests/policy/whoami-simple.rego
-            -p ./charts/universal-chart/tests/policy/lib
-            --data samples/whoami-simple.yml
+          conftest test --combine -p ./charts/universal-chart/tests/policy/whoami-simple.rego \
+            -p ./charts/universal-chart/tests/policy/lib \
+            --data samples/whoami-simple.yml \
             whoami-simple/universal-chart/templates/* || true
 
       # https://github.com/marketplace/actions/conftest-action
