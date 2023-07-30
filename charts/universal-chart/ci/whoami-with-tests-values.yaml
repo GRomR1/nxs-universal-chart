@@ -49,16 +49,3 @@ hooks:
       imageTag: 7.86.0
       command: ['curl']
       args: [ '-q', '{{ $.Values.nameOverride }}-whoami-web:80']
-
-# ❯ helm install f ./charts/universal-chart --values samples/whoami-with-tests.yml
-#
-# ❯ helm test f
-# NAME: f
-# LAST DEPLOYED: Mon Dec  5 18:09:00 2022
-# NAMESPACE: default
-# STATUS: deployed
-# REVISION: 1
-# TEST SUITE:     whoami-test-job
-# Last Started:   Mon Dec  5 18:09:47 2022
-# Last Completed: Mon Dec  5 18:09:51 2022
-# Phase:          Succeeded

@@ -1,0 +1,10 @@
+fooValue: "123"  # define a custom variable
+
+configMaps:
+  sample-config:
+    data:
+      data.conf: |
+        worker_processes:  1;
+
+        # use a render function
+        foo: '{{ $.Values.fooValue }}'

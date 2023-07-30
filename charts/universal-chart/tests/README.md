@@ -73,3 +73,16 @@ To write a new unit-test follow to this guide:
     ```
     3 tests, 3 passed, 0 warnings, 0 failures, 0 exceptions
     ```
+
+6. When unit-test has ready to use add them into workflow to run it automatically via Github Actions. For our example add `configmap-only-envs` into [.github/worflows/conftest.yaml](../../../.github/workflows/conftest.yaml)
+    ```
+    jobs:
+      conftest:
+        runs-on: ubuntu-latest
+        strategy:
+          fail-fast: true
+          matrix:
+            sample:
+              ...
+              - configmap-only-envs   # add in the end on this list
+    ```
