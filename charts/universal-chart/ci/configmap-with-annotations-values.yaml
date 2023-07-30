@@ -1,0 +1,14 @@
+generic:
+  # disable default hook annotations for configMaps & secrets (set `nil` value)
+  hookAnnotations: ~
+
+fooValue: "123"  # define a custom variable
+
+configMaps:
+  config-with-annotations:
+    annotations:
+      helm.sh/hook: "pre-install,pre-upgrade,post-delete"  # override default annotation "helm.sh/hook"
+      foo: '{{ $.Values.fooValue }}'  # use a render function
+    data:
+      data.conf: |
+        worker_processes  1;

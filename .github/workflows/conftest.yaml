@@ -1,0 +1,77 @@
+name: conftest-with-pull
+
+on: [pull_request]
+
+jobs:
+  conftest:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: true
+      matrix:
+        sample:
+          - whoami-simple
+          - configmap-only-envs
+    steps:
+      - name: checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Install Helm
+        uses: azure/setup-helm@v3
+        with:
+          version: v3.12.2
+
+      - name: Install kubectl
+        uses: azure/setup-kubectl@v3
+        with:
+          version: latest # default is latest stable
+
+      # https://github.com/marketplace/actions/setup-opa-conftest
+      - name: Setup Conftest
+        uses: princespaghetti/setup-conftest@v1
+        with:
+          version: 0.44.x
+
+      - name: Make k8s resources from charts
+        run: |
+          helm template w --values ./charts/universal-chart/ci/${{ matrix.sample }}-values.yaml \
+            ./charts/universal-chart/. \
+            --output-dir ${{ matrix.sample }}
+
+          ls ${{ matrix.sample }} && cat ${{ matrix.sample }}/universal-chart/templates/*
+
+      - name: Testing with conftest
+        run: |
+          conftest test --combine -p ./charts/universal-chart/tests/policy/${{ matrix.sample }}.rego \
+            -p ./charts/universal-chart/tests/policy/lib \
+            --data ./charts/universal-chart/ci/${{ matrix.sample }}-values.yaml \
+            --output table \
+            ${{ matrix.sample }}/universal-chart/templates/*
+
+          conftest test --combine -p ./charts/universal-chart/tests/policy/${{ matrix.sample }}.rego \
+            -p ./charts/universal-chart/tests/policy/lib \
+            --data ./charts/universal-chart/ci/${{ matrix.sample }}-values.yaml \
+            --output github \
+            ${{ matrix.sample }}/universal-chart/templates/* \
+            | tee test-results-${{ matrix.sample }}.out
+
+      - name: Upload test results
+        uses: actions/upload-artifact@v3
+        with:
+          name: test-results-${{ matrix.sample }}
+          path: test-results-${{ matrix.sample }}.out
+        # Use always() to always run this step to publish test results when there are test failures
+        if: ${{ always() }}
+
+      # # https://github.com/marketplace/actions/conftest-action
+      # # conftest test --combine -p ./charts/universal-chart/tests/policy/whoami-simple.rego \
+      # #   -p ./charts/universal-chart/tests/policy/lib --data samples/whoami-simple.yml  whoami-simple/
+      # - name: Run conftest
+      #   uses: YubicoLabs/action-conftest@v3
+      #   with:
+      #     files: whoami-simple/universal-chart/templates/
+      #     data: samples/whoami-simple.yml
+      #     policy: charts/universal-chart/tests/policy/whoami-simple.rego charts/universal-chart/tests/policy/lib
+      #     gh-token: ${{ secrets.GITHUB_TOKEN }}
+      #     gh-comment-url: ${{ github.event.pull_request.comments_url }}

@@ -1,0 +1,6 @@
+# configmap with ENVs
+envs:
+  FOO: bar
+  BAR: foo
+  BOOL: true
+  DIGIT: 123
