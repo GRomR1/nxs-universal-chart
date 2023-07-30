@@ -1,5 +1,5 @@
 deploymentsGeneral:
-  enableAffinity: false # default is true
+  enableAffinity: false  # default is true
 
 nameOverride: whoami
 
@@ -48,4 +48,6 @@ hooks:
     - image: curlimages/curl
       imageTag: 7.86.0
       command: ['curl']
-      args: [ '-q', '{{ $.Values.nameOverride }}-whoami-web:80']
+      args:
+      - '-q'
+      - '{{ $.Values.nameOverride }}-whoami-web:80'
